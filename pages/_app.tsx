@@ -1,14 +1,14 @@
 import { Fragment } from "react";
-import { FocusStyleManager } from "@blueprintjs/core";
+// import { FocusStyleManager } from "@blueprintjs/core";
 import Head from "next/head";
 import type { AppProps } from "next/app";
 
 import "normalize.css/normalize.css";
-import "@blueprintjs/icons/lib/css/blueprint-icons.css";
-import "@blueprintjs/core/lib/css/blueprint.css";
+// import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+// import "@blueprintjs/core/lib/css/blueprint.css";
 import "../styles/globals.css";
 
-FocusStyleManager.onlyShowFocusOnTabs();
+// FocusStyleManager.onlyShowFocusOnTabs();
 
 export const App = ({ Component, pageProps }: AppProps) => (
   <Fragment>

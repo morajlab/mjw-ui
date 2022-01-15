@@ -1,8 +1,21 @@
-/* <Navbar>
-    <Navbar.Group align={Alignment.LEFT}>
-        <Navbar.Heading>Blueprint</Navbar.Heading>
-        <Navbar.Divider />
-        <Button className="bp3-minimal" icon="home" text="Home" />
-        <Button className="bp3-minimal" icon="document" text="Files" />
-    </Navbar.Group>
-</Navbar> **/
+import React from "react";
+
+import styles from "./Topbar.module.css";
+
+export const Topbar = () => {
+  return (
+    <ul className={styles.root}>
+      <li>
+        <button>first</button>
+      </li>
+      <li>
+        <button>second</button>
+      </li>
+      <li>
+        <button>third</button>
+      </li>
+    </ul>
+  );
+};
+
+export default Topbar;

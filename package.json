@@ -11,7 +11,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:css": "mjw lint --type style",
     "prepare": "mjw hooks install",
     "story": "mjw story",
     "story:build": "mjw story --build"
@@ -53,7 +52,7 @@
   },
   "homepage": "https://github.com/morajlab/mjw-ui#readme",
   "lint-staged": {
-    "**/*": "mjw format",
-    "**/*.css": "npm run lint:css"
+    "**/*": "mjw format --type prettier",
+    "**/*.css": "mjw lint --type stylelint"
   }
 }
