@@ -1,34 +1,99 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Vaadin Gradle Skeleton Starter
 
-## Getting Started
+This project demos the possibility of having Vaadin project in npm+webpack mode using Gradle.
+Please see the [Starting a Vaadin project using Gradle](https://vaadin.com/docs/latest/guide/start/gradle) for the documentation.
 
-First, run the development server:
+Prerequisites:
+
+- Java 8 or higher
+- node.js and npm. You can either let the Vaadin Gradle plugin to install `nodejs` and `npm/pnpm` for you automatically, or you can install it to your OS:
+  - Windows: [node.js Download site](https://nodejs.org/en/download/) - use the .msi 64-bit installer
+  - Linux: `sudo apt install npm`
+- Git
+- (Optionally): Intellij Ultimate
+
+## Vaadin Versions
+
+- The [v14](https://github.com/vaadin/base-starter-gradle) branch (the default one) contains the example app for Vaadin 14
+- See other branches for other Vaadin versions.
+
+## Running With Gretty In Development Mode
+
+Run the following command in this repo:
 
 ```bash
-npm run dev
-# or
-yarn dev
+./gradlew clean appRun
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Now you can open the [http://localhost:8080](http://localhost:8080) with your browser.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Building In Production Mode
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Simply run the following command in this repo:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```bash
+./gradlew clean build -Pvaadin.productionMode
+```
 
-## Learn More
+That will build this app in production mode as a WAR archive; please find the
+WAR file in `build/libs/base-starter-gradle.war`. You can run the WAR file
+by using [Jetty Runner](https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-runner):
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cd build/libs/
+wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-runner/9.4.26.v20200117/jetty-runner-9.4.26.v20200117.jar
+java -jar jetty-runner-9.4.26.v20200117.jar base-starter-gradle.war
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Now you can open the [http://localhost:8080](http://localhost:8080) with your browser.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Building In Production On CI
 
-## Deploy on Vercel
+Usually the CI images will not have node.js+npm available. Luckily Vaadin will download `nodejs` and `npm/pnpm` automatically, there is nothing you need to do.
+To build your app for production in CI, just run:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+./gradlew clean build -Pvaadin.productionMode
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Running/Debugging In Intellij Ultimate With Tomcat in Development Mode
+
+- Download and unpack the newest [Tomcat 9](https://tomcat.apache.org/download-90.cgi).
+- Open this project in Intellij Ultimate.
+- Click "Edit Launch Configurations", click "Add New Configuration" (the upper-left button which looks like a plus sign `+`), then select Tomcat Server, Local.
+  In the Server tab, the Application Server will be missing, click the "Configure" button and point Intellij to the Tomcat directory.
+  - Still in the launch configuration, in the "Deployment" tab, click the upper-left + button, select "Artifact" and select `base-starter-gradle.war (exploded)`.
+  - Still in the launch configuration, name the configuration "Tomcat" and click the "Ok" button.
+
+Now make sure Vaadin is configured to be run in development mode - run:
+
+```bash
+./gradlew clean vaadinPrepareFrontend
+```
+
+- Select the "Tomcat" launch configuration and hit Debug (the green bug button).
+
+If Tomcat fails to start with `Error during artifact deployment. See server log for details.`, please:
+
+- Go and vote for [IDEA-178450](https://youtrack.jetbrains.com/issue/IDEA-178450).
+- Then, kill Tomcat by pressing the red square button.
+- Then, open the launch configuration, "Deployment", remove the (exploded) war, click `+` and select `base-starter-gradle.war`.
+
+## Running/Debugging In Intellij Community With Gretty in Development Mode
+
+Make sure Vaadin is configured to be run in development mode - run:
+
+```bash
+./gradlew clean vaadinPrepareFrontend
+```
+
+In Intellij, open the right Gradle tab, then go into _Tasks_ / _gretty_, right-click the _appRun_ task and select Debug.
+Gretty will now start in debug mode, and will auto-deploy any changed resource or class.
+
+There are a couple of downsides:
+
+- Even if started in Debug mode, debugging your app won't work.
+- Pressing the red square "Stop" button will not kill the server and will leave it running.
+  Instead, you have to focus the console and press any key - that will kill Gretty cleanly.
+- If Gretty says "App already running", there is something running on port 8080.
+  See above on how to kill Gretty cleanly.
